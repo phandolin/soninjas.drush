@@ -1,0 +1,15 @@
+---
+  - name: First download and install composer
+    shell: curl -sS https://getcomposer.org/installer | php
+  - name: Move composer to correct directory
+    shell: mv composer.phar /usr/local/bin/composer
+  - name: Edit permissions
+    shell: chmod +x /usr/local/bin/composer
+  - name: Add composer's directory to .bash_profile
+    shell: export PATH="home/{{user}}/.composer/vendor/bin:$PATH"
+  - name: Reload .bash_profile
+    shell: source ~/.bash_profile
+  - name: Install the latest Drush using composer
+    shell: /usr/local/bin/composer global require drush/drush:dev-master
+  - name: Give web user permissions to drush
+    shell: chown -R {{user}}:{{group}} /home/{{user}}/
