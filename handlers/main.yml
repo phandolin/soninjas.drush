@@ -1,0 +1,2 @@
+  - name: restarting php
+    service: name=php56 state=restarted

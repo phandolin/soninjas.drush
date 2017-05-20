@@ -1,0 +1,82 @@
+---
+# tasks file for ansible-centos7-php
+  # - name: Add Webtatic EL yum repository
+  #   yum_repository:
+  #     name: el
+  #     description: EL YUM repo
+  #     baseurl: http://rpm.nodesource.com/pub_4.x/el/7/$basearch
+  #     enabled: yes
+  # - name: Add epel repository.
+  #   yum_repository:
+  #     name: epel
+  #     description: EPEL YUM repo
+  #     baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+  #     enabled: yes
+  # - name: Import EPEL GPG key.
+  #   rpm_key:
+  #     key: http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+  #     state: present
+  #
+  # - name: Add REMI php56 yum repository
+  #   yum_repository:
+  #     name: remi-php56
+  #     description: REMI 56 YUM repo
+  #     baseurl: http://mirrors.mediatemple.net/remi/enterprise/$releasever/php56/$basearch/
+  #     enabled: yes
+  # - name: Import el GPG key.
+  #   rpm_key:
+  #     key: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+  #     state: present
+  # - name: Install php 5.6w
+  #   yum: name={{ item }} state=present
+  #   with_items:
+  #         - php56w-fpm
+  #         - php56w-cli
+  #         - php56w-common
+  #         - php56w-gd
+  #         - php56w-mbstring
+  #         - php56w-mcrypt
+  #         - php56w-mysql
+  #         - php56w-opcache
+  #         - php56w-pdo
+  #         - php56w-xml
+  # - name: Install php
+  #   yum: name={{ item }} state=present
+  #   with_items:
+  #             - php
+  #             - info
+  #             - php-fpm
+  #             - php-cli
+  #             - php-opcache
+  #             - php-gd
+  #             - php-mbstring
+  #             - php-mcrypt
+  #             - php-pdo
+  #             - php-mysqlnd
+  #             - php-pear
+  #             - php-xml
+  #             - php-pecl-geoip
+
+    # shell: yum --enablerepo=remi-php56 info php php-fpm php-cli php-opcache php-gd php-mbstring php-mcrypt php-xml php-pdo php-mysqlnd php-pear php-xml php-mcrypt php-pecl-geoip
+
+  # - name: Copy default php-fpm pool
+  #   template: src=www.conf.j2 dest=/opt/remi/php56/root/etc/php-fpm.d/ backup=yes
+  #   notify: reload php-fpm
+
+  # - name: Link php to php56
+  #   shell: ln -s /usr/bin/php56 /usr/bin/php
+
+  - name: First download and install composer
+    shell: curl -sS https://getcomposer.org/installer | php
+  - name: Move composer to correct directory
+    shell: mv composer.phar /usr/local/bin/composer
+  - name: Edit permissions
+    shell: chmod +x /usr/local/bin/composer
+  - name: Add composer's directory to .bash_profile
+    shell: export PATH="home/{{user}}/.composer/vendor/bin:$PATH"
+  - name: Reload .bash_profile
+    shell: source ~/.bash_profile
+  - name: Install the latest Drush using composer
+    shell: /usr/local/bin/composer global require drush/drush:dev-master
+  - name: Give web user permissions to drush
+    shell: chown -R {{user}}:{{group}} /home/{{user}}/

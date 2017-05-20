@@ -1,0 +1,13 @@
+---
+- name: Ashland Food Co-Op Drush Install
+  hosts: centos-webserver
+  remote_user: ansible
+  become: true
+  
+  vars_files:
+    - "../roles/soninjas.drush/vars/main.yml"
+    - "../roles/soninjas.drush/tasks/drush.yml"
+
+  roles:
+       - role: soninjas.drush
+         tags: drush
